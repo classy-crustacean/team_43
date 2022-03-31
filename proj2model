@@ -1,1 +1,20 @@
+print("Enter the area of the parallel plates (m^2): ") #Assume square or add length and width w new area calc???
+area_pp = int(input())
+print("Enter the distance between the parallel plates (m): ")
+dist_pp = int(input())
+print("Enter the rate of airflow (m/s): ")
+v_air = int(input())
+print("Enter the site of the electrostatic precipitator (1,2,3): ")
+site = int(input())
 
+p_density = 0
+
+if site == 1
+  p_density =
+elif site == 2
+  p_density =
+elif site == 3
+  p_density =
+else
+  print("Please enter an appropriate site number (1,2,3).")
+end
