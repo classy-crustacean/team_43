@@ -9,11 +9,11 @@ p_density = None
 
 while p_density == None:
   site = int(input())
-  if site == 1
+  if site == 1 # Power Plant
     p_density =
-  elif site == 2
+  elif site == 2 # Roadside
     p_density =
-  elif site == 3
+  elif site == 3 # Dock at a Marina
     p_density =
   else
     print("Please enter an appropriate site number (1,2,3).")
