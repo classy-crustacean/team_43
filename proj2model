@@ -5,16 +5,15 @@ dist_pp = int(input())
 print("Enter the rate of airflow (m/s): ")
 v_air = int(input())
 print("Enter the site of the electrostatic precipitator (1,2,3): ")
-site = int(input())
+p_density = None
 
-p_density = 0
-
-if site == 1
-  p_density =
-elif site == 2
-  p_density =
-elif site == 3
-  p_density =
-else
-  print("Please enter an appropriate site number (1,2,3).")
-end
+while p_density == None:
+  site = int(input())
+  if site == 1
+    p_density =
+  elif site == 2
+    p_density =
+  elif site == 3
+    p_density =
+  else
+    print("Please enter an appropriate site number (1,2,3).")
