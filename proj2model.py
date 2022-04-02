@@ -1,13 +1,12 @@
-print("Enter the length of the parallel plates (m^2): ")
-length_pp = int(input())
-print("Enter the width of the parallel plates (m^2): ")
-width_pp = int(input())
-print("Enter the distance between the parallel plates (m): ")
-dist_pp = int(input())
-print("Enter the rate of airflow (m/s): ")
-u_r = int(input()) # This is just in the positive x-direction
-print("Enter the voltage (V): ")
-voltage = int(input())
+import math
+length_pp = int(input("Enter the length of the parallel plates (m^2): "))
+width_pp = int(input("Enter the width of the parallel plates (m^2): "))
+dist_pp = int(input("Enter the distance between the parallel plates (m): "))
+u_r = int(input("Enter the rate of airflow (m/s): ")) # This is just in the positive x-direction
+voltage = int(input("Enter the voltage (V): "))
+
+# Particle size 1 represents PM2.5, and 2 represents PM10
+particle_size = int(input("Choose particle size:\n1: PM2.5\n2: PM10\n"))
 
 area_pp = length_pp * width _pp
 
@@ -17,13 +16,13 @@ m_p = ?
 g = 9.81
 re = 1*10**-6
 c_d = 24/re
-p_s = ?
 p_a = 0.9093
 d = ?
 a = ((1/4)*(math.pi)*(d_p)**2)
-p = p_s-p_a # The density of the smog minus the air
+p = 0.0000000092 
+# The density of PM2.5 particles is 0.0000000092 kg/m^3
+# The density of PM10 particles 0.0000000116 kg/m^3
 
-import math
 # Drag is in the x-direction. Everything else is in the y-direction.
 a = (-(m_p * g) - ((1/2)(c_d * (p_s - p_a) * a * u_r * u__r)) + ((1/6) * (math.pi) * (p_s - p_a) * g * (d**3)) + (voltage) / (dist_pp))) / (m_p)
 a_x = -1/2*c_D * p *a *u_r *u_r # The acceleration in the x-direction
