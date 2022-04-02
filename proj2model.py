@@ -47,3 +47,4 @@ if greatest distance > dist_pp:
   efficiency = 100
 else:
   efficiency = (1-(dist_pp-greatest_distance)/dist_pp)*100
+print("efficiency: %.2f" % efficiency)
