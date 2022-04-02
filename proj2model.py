@@ -19,17 +19,24 @@ while (not (particle_size == 1 or particle_size == 2)):
 
 if (particle_size == 1):
   d = 0.0000000025
-  p = 0.0000000335
+  p = 1000
 elif (particle_size == 2):
   d = 0.00000001
-  p = 0.00000018
+  p = 1000
 
-m_p = p / (2.688 * 10 ** 25) # Smog density times 1000L divided by 1000L/22.4L/mole * 6.022*10^23 particles/mole
+m_p = p * pi / 6 * d**3 # Smog density times 1000L divided by 1000L/22.4L/mole * 6.022*10^23 particles/mole
 g = 9.81
 re = 1*10**-6
 c_d = 24/re
 p_a = 0.9093
 cross_sectional_area = (0.25 * pi * d**2)
+
+print("m_p", m_p)
+print("g", g)
+print('re', re)
+print('c_d', c_d)
+print('p_a', p_a)
+print('cross sectional area', cross_sectional_area)
 
 # Drag is in the x-direction. Everything else is in the y-direction.
 a_x = -0.5 * c_d * p * cross_sectional_area * u_r * u_r / m_p # The acceleration in the x-direction
