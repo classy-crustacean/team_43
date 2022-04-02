@@ -17,10 +17,10 @@ while (particle_size == 0)
   particle_size = int(input("Choose particle size:\n1: PM2.5\n2: PM10\n"))
   if (particle_size == 1):
     d = 0.0000000025
-    p = 0.0000000092
+    p = 0.0000000335
   elif (particle_size == 2):
     d = 0.00000001
-    p = 0.0000000116
+    p = 0.00000018
   else:
     print("invalid particle size")
     particle_size = 0
