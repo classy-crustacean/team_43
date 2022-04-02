@@ -25,7 +25,7 @@ while (particle_size == 0)
     print("invalid particle size")
     particle_size = 0
 
-m_p = p*1000/(2.688*10^25)
+m_p = p*1000/(2.688*10^25) # Smog density times 1000L divided by 1000L/22.4L/mole * 6.022*10^23 particles/mole
 g = 9.81
 re = 1*10**-6
 c_d = 24/re
@@ -33,12 +33,12 @@ p_a = 0.9093
 a = ((1/4)*(math.pi)*(d)**2)
 
 # Drag is in the x-direction. Everything else is in the y-direction.
-a = (-(m_p * g) - ((1/2)(c_d * (p_s - p_a) * a * u_r * u__r)) + ((1/6) * (math.pi) * (p_s - p_a) * g * (d**3)) + (voltage) / (dist_pp))) / (m_p)
+a = (-(m_p * g) - ((1/2)(c_d * (p_s - p_a) * a * u_r * u__r)) + ((1/6) * (math.pi) * (p) * g * (d**3)) + (voltage) / (dist_pp))) / (m_p)
 a_x = -1/2*c_D * p *a *u_r *u_r # The acceleration in the x-direction
 a_y = (-m_p*g + 1/6 * math.pi * p *g * d**3 + voltage / dist_pp)/m_p # The acceleration in the y-direction
 t = (u_r - math.sqrt(u_r**2-4*(1/4*c_D * p *a *u_r *u_r)(length_pp)))/(1/2**c_D * p *a *u_r *u_r) # The time it takes one particle to travel from one side of the ESP to the other
 if t < 0:
-  t = (u_r + math.sqrt(u_r**2-4*(1/4*c_D * p *a *u_r *u_r)(length_pp)))/(1/2**c_D * p *a *u_r *u_r) # # The time it takes one particle to travel from one side of the ESP to the other if
+  t = (u_r + math.sqrt(u_r**2-4*(1/4*c_D * p *a *u_r *u_r)(length_pp)))/(1/2**c_D * p *a *u_r *u_r) # The time it takes one particle to travel from one side of the ESP to the other if
   # the initial calculation for t was negative
 
 greatest_distance = 1/2(a_y)*t**2 # The furthest below the top plate that the particles can be before they are no longer picked up by the electrostaic participator
