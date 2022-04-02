@@ -38,8 +38,8 @@ t = (u_r - sqrt(u_r ** 2 - 4 * (0.25 * c_d * p * cross_sectional_area * u_r * u_
 if t < 0:
   t = (u_r + sqrt(u_r**2-4*(1/4*c_d * p * cross_sectional_area * u_r * u_r) * length_pp)) / (0.5 * c_d * p * cross_sectional_area * u_r * u_r) # The time it takes one particle to travel from one side of the ESP to the other if
   # the initial calculation for t was negative
-
-greatest_distance = 0.5 * a_y * t ** 2 # The furthest below the top plate that the particles can be before they are no longer picked up by the electrostaic participator
+print(t)
+greatest_distance = 0.5 * a_y * t ** 2 # The furthest below the top plate that the particles can be before they are no longer picked up by the electrostayic participator
 print(greatest_distance)
 # Efficiency calculations
 if greatest_distance > dist_pp:
@@ -47,3 +47,4 @@ if greatest_distance > dist_pp:
 else:
   efficiency = (1 - (dist_pp - greatest_distance) / dist_pp) * 100
 print("efficiency: %.2f" % efficiency)
+print(efficiency)
