@@ -17,15 +17,26 @@ while (not (particle_size == 1 or particle_size == 2)):
   print("invalid particle size")
   particle_size = int(input("Choose particle size:\n1: PM2.5\n2: PM10\n"))
 
+# Assuming the ionizer is in the center of a 1m gap, there is a maximum of 0.5m above and below for particles to pass through
+# Dist_i must be greater than 0.1 
+dist_i = float(input("Enter the distance of the particle from the corona ionization (m): "))
+p_i = float(input("Enter the potential ionization (m): "))
+ 
 if (particle_size == 1):
   d = 0.0000000025
   p = 1000
+  pn = 2.5
   smog_density = 0.0000000335
 elif (particle_size == 2):
   d = 0.00000001
   p = 1000
+  pn = 10
   smog_density = 0.0000000116
 
+pa = (pn /(p_i * dist_i)) + 50
+
+eff_ionization = pa
+  
 m_p = p * pi / 6 * d**3 # Smog density times 1000L divided by 1000L/22.4L/mole * 6.022*10^23 particles/mole
 g = 9.81
 re = 1000
@@ -57,4 +68,5 @@ if greatest_distance > dist_pp:
   efficiency = 100
 else:
   efficiency = (1 - (dist_pp - greatest_distance) / dist_pp) * 100
-print("efficiency: %.2f" % efficiency)
+print("efficiency of electrostatic precipitation: %.2f" % efficiency)
+print("efficiency of ionization: %.2f " % eff_ionization)
