@@ -30,6 +30,7 @@ re = 1*10**-6
 c_d = 24/re
 p_a = 0.9093
 cross_sectional_area = (0.25 * pi * d**2)
+q = 1.602*10**-19
 
 print("m_p", m_p)
 print("g", g)
@@ -40,7 +41,7 @@ print('cross sectional area', cross_sectional_area)
 
 # Drag is in the x-direction. Everything else is in the y-direction.
 a_x = -0.5 * c_d * p * cross_sectional_area * u_r * u_r / m_p # The acceleration in the x-direction
-a_y = (-m_p * g + 1 / 6 * pi * p * g * d**3 + voltage / dist_pp) / m_p # The acceleration in the y-direction
+a_y = (-m_p * g + 1 / 6 * pi * p * g * d**3 + q * voltage / dist_pp) / m_p # The acceleration in the y-direction
 t = (u_r - sqrt(u_r ** 2 - 4 * (0.25 * c_d * p * cross_sectional_area * u_r * u_r) * length_pp)) / (0.5 * c_d * p * cross_sectional_area * u_r * u_r) # The time it takes one particle to travel from one side of the ESP to the other
 if t < 0:
   t = (u_r + sqrt(u_r**2-4*(1/4*c_d * p * cross_sectional_area * u_r * u_r) * length_pp)) / (0.5 * c_d * p * cross_sectional_area * u_r * u_r) # The time it takes one particle to travel from one side of the ESP to the other if
@@ -54,4 +55,3 @@ if greatest_distance > dist_pp:
 else:
   efficiency = (1 - (dist_pp - greatest_distance) / dist_pp) * 100
 print("efficiency: %.2f" % efficiency)
-print(efficiency)
