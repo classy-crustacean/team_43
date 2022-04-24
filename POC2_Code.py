@@ -113,6 +113,8 @@ try:
         
         message = "%f,%f,%f" % (x_position, y_position, robotAngle)
         sock.sendto(message.encode('utf-8'), UDP_INFO)
+        
+        gyroAngle = BP.get_sensor(legoGyro)
 
         if instructions[0]['name'] == 'basicFollow':
             rightDistance = grovepi.digitalRead(rightUltrasonic)
@@ -152,7 +154,6 @@ try:
                 lastError = error
         elif instructions[0]['name'] == 'relativeTurn':
             if lastInfo != 'relativeTurn':
-                gyroAngle = BP.get_sensor(legoGyro)
                 lastGyroAngle = gyroAngle
                 BP.set_motor_dps(leftMotor, 0)
                 BP.set_motor_dps(rightMotor, 0)
