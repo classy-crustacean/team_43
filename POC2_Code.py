@@ -14,6 +14,7 @@ leftMotor = BP.PORT_A
 rightUltrasonic = 3
 leftUltrasonic = 8
 frontUltrasonic = BP.PORT_1
+legoGyro = BP.PORT_2
 wheelDiameter = 56
 width = 150
 
@@ -68,7 +69,7 @@ try:
     rightLength = 0
     leftLength = 0
     
-    delay = 0.05
+    delay = 0.1
 
     BP.offset_motor_encoder(rightMotor, BP.get_motor_encoder(rightMotor))
     BP.offset_motor_encoder(leftMotor, BP.get_motor_encoder(leftMotor))
@@ -122,10 +123,12 @@ try:
             
             # handle turning
             if frontDistance > 200 and rightDistance > 50 and leftDistance > 50:
-                instructions.pop(0)
-            elif rightDistance > 50:
+                BP.set_motor_dps(leftMotor, 0)
+                BP.set_motor_dps(rightMotor, 0)
+                instructions.insert(0, {'name': 'handleFourWay', 'stage': 0})
+            elif rightDistance > 30:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': -math.pi / 2})
-            elif frontDistance < 50:
+            elif frontDistance < 20 and frontDistance > 0:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
             else:
                 error = leftDistance - rightDistance
@@ -147,9 +150,19 @@ try:
                 BP.set_motor_dps(rightMotor, -baseSpeed - modifier)
 
                 lastError = error
-            lastInfo = 'basicFollow'
         elif instructions[0]['name'] == 'relativeTurn':
-            error = instructions[0]['angle'] - robotAngle
+            if lastInfo != 'relativeTurn':
+                gyroAngle = BP.get_sensor(legoGyro)
+                lastGyroAngle = gyroAngle
+                BP.set_motor_dps(leftMotor, 0)
+                BP.set_motor_dps(rightMotor, 0)
+                Kp = 100
+                Ki = 0
+                Kd = 30
+                lastError = 0
+                integral = 0
+            relativeAngle = gyroAngle - lastGyroAngle
+            error = instructions[0]['angle'] - relativeAngle
             if (error > pi):
                 error -= 2 * pi
             elif (error < -pi):
@@ -160,16 +173,6 @@ try:
                 BP.set_motor_dps(leftMotor, 0)
                 BP.set_motor_dps(rightMotor, 0)
             else:
-
-                if lastInfo != 'relativeTurn':
-                    BP.set_motor_dps(leftMotor, 0)
-                    BP.set_motor_dps(rightMotor, 0)
-                    Kp = 100
-                    Ki = 0
-                    Kd = 30
-                    lastError = error
-                    integral = 0
-                
                 integral = integral + error * delay
                 derivative = (error - lastError)
 
@@ -178,7 +181,6 @@ try:
                 BP.set_motor_dps(rightMotor, -modifier)
 
                 lastError = error
-                lastInfo = 'relativeTurn'
         
         elif instructions[0]['name'] == 'dropoff':
             print("Dropoff Code not yet implemented")
@@ -189,7 +191,6 @@ try:
             instructions.pop(0)
         
         elif instructions[0]['name'] == 'toPoint':
-            lastInfo = 'toPoint'
             goalX = instructions[0]['x'] * 400
             goalY = instructions[0]['y'] * 400
             dist = math.sqrt((goalX - x_position)**2 + (goalY - y_position)**2)
@@ -230,10 +231,31 @@ try:
         elif instructions[0]['name'] == 'avoidTurn':
             print("avoid Turn not yet implemented")
             instructions.pop(0)
+        elif instructions[0]['name'] == 'handleFourWay':
+            stage = instructions[0]['stage']
+            instructions[0]['stage'] += 1
+            foundCorner = False
+            frontUltrasonicDistance = BP.get_sensor(frontUltrasonic)
+            
+            if stage == 0:
+                instructions.insert(0, {'name': 'relativeTurn', 'angle': pi / 4})
+            if stage == 1:
+                if frontUltrasonicDistance < 50 and frontUltrasonicDistance > 0:
+                    foundCorner = True
+                instructions.insert(0, {'name': 'relativeTurn', 'angle': -pi / 2})
+            if stage == 2:
+                if frontUltrasonicDistance < 50 and frontUltrasonicDistance > 0:
+                    foundCorner = True
+                instructions.insert(0, {'name': 'relativeTurn', 'angle': pi / 4})
+            if stage == 3:
+                instructions.pop(0)
+                if foundCorner:
+                    instructions.insert(0, {'name': 'relativeTurn', 'angle': -pi / 2})
 
         if len(instructions) == 0:
             instructions.append({'name': 'stop'})
         
+        lastInfo = instructions[0]['name']
         time.sleep(delay)
     
     BP.set_motor_dps(leftMotor, 0)
