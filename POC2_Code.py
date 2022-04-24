@@ -138,7 +138,7 @@ try:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
                 values = myIMU.readMagnet()
                 Mag = math.sqrt(values['x']**2 + values['y']**2 + values['z']**2)
-                if Mag >= 150:
+                if Mag >= 150 and values['x'] > 0:
                     theta = math.atan(values['x']/values['y'])
                     x_comp = 10*math.sin(theta) # This is the value for how far in front of the GEARS the magnetic source is
                     y_comp = 10*math.cos(theta) # This is the value for how far side to side the magnetic source is
