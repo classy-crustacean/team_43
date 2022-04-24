@@ -6,6 +6,8 @@ from brickpi3 import BrickPi3
 import os
 import re
 import socket
+import MPU9250
+from IR_Functions import *
 
 BP = BrickPi3()
 
@@ -17,6 +19,8 @@ frontUltrasonic = BP.PORT_1
 legoGyro = BP.PORT_2
 wheelDiameter = 56
 width = 150
+myIMU = MPU9250.MPU9250()
+IR_setup(grovepi)
 
 integral = 0
 lastError = 0
@@ -132,6 +136,18 @@ try:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': -math.pi / 2})
             elif frontDistance < 20 and frontDistance > 0:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
+                values = myIMU.readMagnet()
+                Mag = math.sqrt(values['x']**2 + values['y']**2 + values['z']**2)
+                if Mag >= 150:
+                    theta = math.atan(values['x']/values['y'])
+                    x_comp = 10*math.sin(theta) # This is the value for how far in front of the GEARS the magnetic source is
+                    y_comp = 10*math.cos(theta) # This is the value for how far side to side the magnetic source is
+                    if values['y'] < 0:
+                        y_comp *= -1
+                    # Put a mark at (y_comp,x_comp) from the robot
+                [sensor1_value, sensor2_value] = IR_Read(grovepi)
+                if sensor1_value+sensor2_value >= 100:
+                    #Put a mark 10 cm in front of the robot for the IR source
             else:
                 error = leftDistance - rightDistance
 
