@@ -117,16 +117,16 @@ try:
                 
             elif Mag >= 150 and magnetValues['x'] > 0:
                 theta = math.atan(magnetValues['x']/magnetValues['y'])
-                x_comp = 10*math.sin(theta) # This is the value for how far in front of the GEARS the magnetic source is
-                y_comp = 10*math.cos(theta) # This is the value for how far side to side the magnetic source is
+                x_comp = 16*math.sin(theta) # This is the value for how far in front of the GEARS the magnetic source is
+                y_comp = 16*math.cos(theta) # This is the value for how far side to side the magnetic source is
                 if magnetValues['y'] < 0:
                     y_comp *= -1
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
                 message += ",%s,%f,%f" % ('magnet', x_comp, y_comp)
                 
-            elif sensor1_value+sensor2_value >= 150:
+            elif sensor1_value+sensor2_value >= 130:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
-                message += ",%s,%f" % ('infrared', 10)
+                message += ",%s,%f" % ('infrared', 15)
             else:
                 error = leftDistance - rightDistance
 
