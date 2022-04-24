@@ -116,16 +116,19 @@ try:
             robotAngle = (robotAngle - arcAngle) % (2 * pi)
         
         message = "%f,%f,%f" % (x_position, y_position, robotAngle)
-        sock.sendto(message.encode('utf-8'), UDP_INFO)
         
         gyroAngle = BP.get_sensor(legoGyro)
+        magnetValues = myIMU.readMagnet()
+        Mag = math.sqrt(magnetValues['x']**2 + magnetValues['y']**2 + magnetValues['z']**2)
+        [sensor1_value, sensor2_value] = IR_Read(grovepi)
 
         if instructions[0]['name'] == 'basicFollow':
             rightDistance = grovepi.digitalRead(rightUltrasonic)
             leftDistance = grovepi.digitalRead(leftUltrasonic)
             frontDistance = BP.get_sensor(frontUltrasonic)
             
-            
+            x_comp = None
+            y_comp = None
             
             # handle turning
             if frontDistance > 200 and rightDistance > 50 and leftDistance > 50:
@@ -136,18 +139,19 @@ try:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': -math.pi / 2})
             elif frontDistance < 20 and frontDistance > 0:
                 instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
-                values = myIMU.readMagnet()
-                Mag = math.sqrt(values['x']**2 + values['y']**2 + values['z']**2)
-                if Mag >= 150 and values['x'] > 0:
-                    theta = math.atan(values['x']/values['y'])
-                    x_comp = 10*math.sin(theta) # This is the value for how far in front of the GEARS the magnetic source is
-                    y_comp = 10*math.cos(theta) # This is the value for how far side to side the magnetic source is
-                    if values['y'] < 0:
-                        y_comp *= -1
-                    # Put a mark at (y_comp,x_comp) from the robot
-                [sensor1_value, sensor2_value] = IR_Read(grovepi)
-                if sensor1_value+sensor2_value >= 100:
-                    #Put a mark 10 cm in front of the robot for the IR source
+                
+            elif Mag >= 150 and magnetValues['x'] > 0:
+                theta = math.atan(magnetValues['x']/magnetValues['y'])
+                x_comp = 10*math.sin(theta) # This is the value for how far in front of the GEARS the magnetic source is
+                y_comp = 10*math.cos(theta) # This is the value for how far side to side the magnetic source is
+                if magnetValues['y'] < 0:
+                    y_comp *= -1
+                instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
+                message += ",%s,%f,%f" % ('magnet', x_comp, y_comp)
+                
+            elif sensor1_value+sensor2_value >= 150:
+                instructions.insert(0, {'name': 'relativeTurn', 'angle': math.pi / 2})
+                message += ",%s,%f" % ('infrared', 10)
             else:
                 error = leftDistance - rightDistance
 
@@ -169,8 +173,9 @@ try:
 
                 lastError = error
         elif instructions[0]['name'] == 'relativeTurn':
+            if firstGyroAngle == None:
+                firstGyroAngle = gyroAngle
             if lastInfo != 'relativeTurn':
-                lastGyroAngle = gyroAngle
                 BP.set_motor_dps(leftMotor, 0)
                 BP.set_motor_dps(rightMotor, 0)
                 Kp = 100
@@ -178,7 +183,7 @@ try:
                 Kd = 30
                 lastError = 0
                 integral = 0
-            relativeAngle = gyroAngle - lastGyroAngle
+            relativeAngle = gyroAngle - firstGyroAngle
             error = instructions[0]['angle'] - relativeAngle
             if (error > pi):
                 error -= 2 * pi
@@ -187,6 +192,7 @@ try:
 
             if (abs(error) < 0.1):
                 instructions.pop(0)
+                firstGyroAngle = None
                 BP.set_motor_dps(leftMotor, 0)
                 BP.set_motor_dps(rightMotor, 0)
             else:
@@ -273,6 +279,9 @@ try:
             instructions.append({'name': 'stop'})
         
         lastInfo = instructions[0]['name']
+            
+        sock.sendto(message.encode('utf-8'), UDP_INFO)
+        
         time.sleep(delay)
     
     BP.set_motor_dps(leftMotor, 0)
